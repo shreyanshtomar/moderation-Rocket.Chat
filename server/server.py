@@ -23,8 +23,8 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-#device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 device_avail = torch.cuda.is_available()
 
 class_index = {0: 'nsfw', 1: 'sfw'}
@@ -39,8 +39,8 @@ net.fc = nn.Linear(num_ftrs, 128)
 net.fc = net.fc.to(device)
 
 path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
-#Preparing model for evaluation
 
+#Preparing model for evaluation
 if not device_avail:
     net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
 else:
