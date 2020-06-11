@@ -1,25 +1,50 @@
+import copy    
+import glob
+import io
+from io import open
+import json
+import numpy as np
+import os, os.path, random
+from pathlib import Path
+import requests
+import time
+
 import torch
-from torchvision import models
+import torch.functional as F
+import torch.nn as nn
+import torch.optim as optim
+import torchvision
 import torchvision.transforms as transforms
+from torchvision import datasets, models, transforms
+
+
 from PIL import Image
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
+device_avail = torch.cuda.is_available()
 
 class_index = {0: 'nsfw', 1: 'sfw'}
 net = models.resnet18(pretrained=True)
-net = net.cuda() if device else net
+net = net.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.0001, momentum=0.9)
 
 num_ftrs = net.fc.in_features
 net.fc = nn.Linear(num_ftrs, 128)
-net.fc = net.fc.cuda() if device else net.fc
+net.fc = net.fc.to(device)
 
-net.load_state_dict(torch.load('/Downloads/resnet18_checkpoint.pth'))
+path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
+#Preparing model for evaluation
+
+if not device_avail:
+    net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+else:
+    net.load_state_dict(torch.load(path))
 net.eval()
 
 #Preprocess Image
