@@ -1,3 +1,11 @@
+import torch
+import torch.functional as F
+import torch.nn as nn
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+from torchvision import datasets, models, transforms
+
 import copy    
 import glob
 import io
@@ -9,22 +17,13 @@ from pathlib import Path
 import requests
 import time
 
-import torch
-import torch.functional as F
-import torch.nn as nn
-import torch.optim as optim
-import torchvision
-import torchvision.transforms as transforms
-from torchvision import datasets, models, transforms
-
-
 from PIL import Image
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+#Automatically detects if the device is CUDA enabled to run GPU inferences.
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-#device = torch.device("cpu")
 device_avail = torch.cuda.is_available()
 
 class_index = {0: 'nsfw', 1: 'sfw'}
@@ -40,7 +39,7 @@ net.fc = net.fc.to(device)
 
 path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
 
-#Preparing model for evaluation
+#Preparing model for evaluation based on device's capability
 if not device_avail:
     net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
 else:
