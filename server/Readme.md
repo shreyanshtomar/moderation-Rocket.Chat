@@ -2,11 +2,10 @@
 $ FLASK_ENV=development FLASK_APP=server/server.py flask run
 
 ### We can use the requests library to send a POST request to our app:
-1. Update the path of image you want to test in Request Script
-2. Run it!
-3. Now check resp.json()
-4. check resp.json() output. 
-5. Output -> {'class_name': 'sfw'}
+1. Update the path of image you want to test in Request Script(request.py).
+2. Run the server.py script to start the server which serves as one endpoint.
+3. Run the request.py script and check the output for prediction. ("$ python3 server/request.py").
+4. Output -> {'class_name': 'sfw'} (depends of type of image in this case the image is of the park(sfw)).
 
 ### Dependencies
 1. Anaconda ("https://docs.anaconda.com/anaconda/install/")
