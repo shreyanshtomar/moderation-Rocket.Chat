@@ -1,7 +1,7 @@
 ### Run the server
 $ FLASK_ENV=development FLASK_APP=server/server.py flask run
 
-### We can use the requests library to send a POST request to our app:
+### We can use the requests library in python to send a POST request to our app:
 1. Update the path of image you want to test in Request Script(request.py).
 2. Run the server.py script to start the server which serves as one endpoint.
 3. Run the request.py script and check the output for prediction. ("$ python3 server/request.py").
