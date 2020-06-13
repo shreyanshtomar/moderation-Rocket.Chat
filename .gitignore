@@ -142,3 +142,4 @@ cython_debug/
 __pycache__
 *.pyo
 *.pyc
+.local
