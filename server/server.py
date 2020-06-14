@@ -48,7 +48,7 @@ net.eval()
 
 #Preprocess Image
 def transform_image(image_bytes):
-    my_transforms = transforms.Compose([transforms.RandomResizedCrop(224),
+    my_transforms = transforms.Compose([transforms.Resize(224),
                                         transforms.ToTensor(),
                                         transforms.Normalize(
                                             [0.5, 0.5, 0.5],
