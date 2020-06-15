@@ -14,12 +14,10 @@ from io import open
 import json
 import os, os.path, random
 from pathlib import Path
-import requests
 import time
 
 import re
 import base64
-#import cStringIO
 from PIL import Image
 from flask import Flask, jsonify, request
 
@@ -57,8 +55,15 @@ def transform_image(image_bytes):
                                         transforms.Normalize(
                                             [0.485, 0.456, 0.406],
                                             [0.229, 0.224, 0.225])])
-    image = Image.open(io.BytesIO(image_bytes))
+    image = Image.open(io.BytesIO(base64.decodebytes(image_bytes)))
     return my_transforms(image).unsqueeze(0)
+
+def get_prediction(image_bytes):
+    tensor = transform_image(image_bytes=image_bytes).to(device)
+    outputs = net.forward(tensor)
+    _, y_hat = outputs.max(1)
+    predicted_idx = y_hat.item()
+    return class_index[predicted_idx]
 
 def batch_prediction(image_bytes_batch):
     image_tensors = [transform_image(image_bytes=image_bytes) for image_bytes in image_bytes_batch]
@@ -70,17 +75,20 @@ def batch_prediction(image_bytes_batch):
 
 streamer = ThreadedStreamer(batch_prediction, batch_size=64)
 
-@app.route('/stream_predict', methods=['POST'])
-def stream_predict():
+@app.route('/', methods=['GET'])
+def root():
+    return jsonify({'msg' : 'Try POSTing to the /steam_predict endpoint with an RGB image attachment'})
+
+@app.route('/predict', methods=['POST'])
+def predict():
     if request.method == 'POST':
         # we will get the file from the request
         file = request.files['file']
+        #image_data = re.sub('^data:image/.+;base64,', '', request.form['data'])
         # convert that to bytes
         img_bytes = file.read()
-        #class_name = batch_prediction(image_bytes=img_bytes)
         class_name = streamer.predict([img_bytes])[0]
         return jsonify({'class_name': class_name})
-
 
 if __name__ == '__main__':
     app.run()
