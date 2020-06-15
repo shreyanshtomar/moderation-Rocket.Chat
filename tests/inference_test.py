@@ -10,7 +10,7 @@ class BasicTestCase(unittest.TestCase):
     def test_sfw_image(self):
         tester = app.test_client(self)
         path = f"{self.test_image_directory}/test_images/park.jpeg"
-        resp = tester.post('/predict', data={"file": open(path,'rb')})
+        resp = tester.post('/stream_predict', data={"file": open(path,'rb')})
 
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, b'{"class_name":"sfw"}\n')
@@ -20,7 +20,7 @@ class BasicTestCase(unittest.TestCase):
         image_path = f"{self.test_image_directory}/test_images/park.jpeg"
         image_file_handle = open(image_path, "rb")
         base64_string = base64.b64encode(image_file_handle.read())
-        resp = tester.post('/predict', data={"file": base64_string})
+        resp = tester.post('/stream_predict', data={"file": base64_string})
 
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, b'{"class_name":"sfw"}\n')
