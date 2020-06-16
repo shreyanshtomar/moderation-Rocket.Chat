@@ -77,18 +77,26 @@ streamer = ThreadedStreamer(batch_prediction, batch_size=64)
 
 @app.route('/', methods=['GET'])
 def root():
-    return jsonify({'msg' : 'Try POSTing to the /steam_predict endpoint with an RGB image attachment'})
+    return jsonify({'msg' : 'Try POSTing to the /predict endpoint with an RGB image attachment'})
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
         # we will get the file from the request
-        file = request.files['file']
+        file = request.files['image']
         #image_data = re.sub('^data:image/.+;base64,', '', request.form['data'])
         # convert that to bytes
         img_bytes = file.read()
         class_name = streamer.predict([img_bytes])[0]
+        if(class_name == 'nsfw'):
+            return jsonify({0 : class_name})
+
+        elif(class_name == 'sfw'):
+            return jsonify({1 : class_name})
+
         return jsonify({'class_name': class_name})
 
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
+    
