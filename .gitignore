@@ -140,6 +140,7 @@ cython_debug/
 # Custom
 .vscode
 __pycache__
+__pycache__/
 *.pyo
 *.pyc
 .local
