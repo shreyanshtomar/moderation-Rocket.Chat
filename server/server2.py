@@ -15,6 +15,8 @@ import json
 import os, os.path, random
 from pathlib import Path
 import time
+import requests
+import wget
 
 import re
 import base64
@@ -51,6 +53,9 @@ else:
 #Evaluation mode
 net.eval()
 
+#Download image
+
+
 #Preprocess Image
 def transform_image(image_bytes):
     my_transforms = transforms.Compose([transforms.Resize(255),
@@ -59,7 +64,7 @@ def transform_image(image_bytes):
                                         transforms.Normalize(
                                             [0.485, 0.456, 0.406],
                                             [0.229, 0.224, 0.225])])
-    image = Image.open(io.BytesIO(base64.decodebytes(image_bytes)))
+    image = Image.open(image_bytes)
     return my_transforms(image).unsqueeze(0)
 
 def get_prediction(image_bytes):
@@ -68,16 +73,6 @@ def get_prediction(image_bytes):
     _, y_hat = outputs.max(1)
     predicted_idx = y_hat.item()
     return class_index[predicted_idx]
-
-def batch_prediction(image_bytes_batch):
-    image_tensors = [transform_image(image_bytes=image_bytes) for image_bytes in image_bytes_batch]
-    tensor = torch.cat(image_tensors).to(device)
-    outputs = net.forward(tensor)
-    _, y_hat = outputs.max(1)
-    predicted_ids = y_hat.tolist()
-    return [class_index[i] for i in predicted_ids]
-
-streamer = ThreadedStreamer(batch_prediction, batch_size=64)
 
 @app.route('/', methods=['GET'])
 def root():
@@ -88,25 +83,22 @@ def predict():
     if request.method == 'POST':
         # we will get the file from the request
         start_time = time.time()
-        file = request.files['image']
-        #image_data = re.sub('^data:image/.+;base64,', '', request.form['data'])
-        # convert that to bytes
-        img_bytes = file.read()
-        print("Image read successfull.")
+        payload = request.form.to_dict()
+        for i in enumerate(payload):
+            imgUrl = payload['imageUrls']
+            print(imgUrl)
+            image_filename = wget.download(imgUrl)
 
-        class_name = streamer.predict([img_bytes])[0]
-        end_time = time.time()
-        print(end_time-start_time)
+            class_name = get_prediction(image_filename)
+            end_time = time.time()
 
-        if(class_name == 'nsfw'):
-            print("Prediction returned to the endpoint!")
-            return jsonify({0 : class_name})
+            if(class_name == 'nsfw'):
+                print("Prediction returned to the endpoint!")
+                print(end_time-start_time)
+                return jsonify({0 : class_name})
 
-        elif(class_name == 'sfw'):
-            print("Prediction returned to the endpoint!")
-            return jsonify({1 : class_name})
+        return jsonify({1: class_name})
 
 
 if __name__ == '__main__':
     app.run()
-    
