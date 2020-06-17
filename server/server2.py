@@ -53,9 +53,6 @@ else:
 #Evaluation mode
 net.eval()
 
-#Download image
-
-
 #Preprocess Image
 def transform_image(image_bytes):
     my_transforms = transforms.Compose([transforms.Resize(255),
@@ -84,21 +81,20 @@ def predict():
         # we will get the file from the request
         start_time = time.time()
         payload = request.form.to_dict()
-        for i in enumerate(payload):
+        for i in payload.values():
             imgUrl = payload['imageUrls']
-            print(imgUrl)
+            print("Downloading Image....")
             image_filename = wget.download(imgUrl)
 
             class_name = get_prediction(image_filename)
             end_time = time.time()
+            print(end_time-start_time)
 
             if(class_name == 'nsfw'):
                 print("Prediction returned to the endpoint!")
-                print(end_time-start_time)
                 return jsonify({0 : class_name})
 
         return jsonify({1: class_name})
-
 
 if __name__ == '__main__':
     app.run()
