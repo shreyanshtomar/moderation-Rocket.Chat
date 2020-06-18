@@ -74,36 +74,44 @@ def get_prediction(image_bytes):
 def root():
     return jsonify({'msg' : 'Try POSTing to the /predict endpoint with an RGB image attachment'})
 
+# If there was an error processing image URLs, continue processing the rest of the images.
+# If one of the image is NOT appropriate, return nsfw
+# if all the images are appropriate, but had few errors processing other image, respond with error message with status code 500
+# if all images successfully processed and are all appropriate, return sfw
 @app.route('/predict', methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        # we will get the file from the request
-        start_time = time.time()
-        payload = request.get_json()
+    # we will get the file from the request
+    start_time = time.time()
+    payload = request.get_json()
+    error = {}
 
-        for imgUrl in payload['imageUrls']:
-            #imgUrl = payload['imageUrls']
-            print(f'Retreiving Image...\n {imgUrl}')            
+    for imgUrl in payload['imageUrls']:
+        print(f'Retreiving Image...\n {imgUrl}')
+        try:
             image_filename = requests.get(imgUrl, stream = True)
-
             if image_filename.status_code == 200:
                 class_name = get_prediction(io.BytesIO(image_filename.content))
-                end_time = time.time()
-                totalTime = end_time-start_time
-                print(f'Image downloaded successfully! \n Time - {totalTime: .2f}s')
             else:
-                end_time = time.time()
-                totalTime = end_time-start_time
-                print(f'Image could not be downloaded! \n Time - {totalTime: .2f}s')
+                print(f'ERROR: Error while downloading image. Got status code {image_filename.status_code}.')
+                error = {'error':'Unexpected error encountered.'}
+                continue
+        except Exception as ex:
+            print(f'ERROR: {ex}')
+            error = {'error':'Unexpected error encountered.'}
+            continue
 
-            print('-'*80)
+        end_time = time.time()
+        totalTime = end_time-start_time
+        print(f'Time - {totalTime: .2f}s')
+        print('-'*80)
 
-            if(class_name == 'nsfw'):
-                print("Offensive Image Detected!\n\nReturning the Response!")
-                return jsonify({0 : class_name})
+        if(class_name == 'nsfw'):
+            break
 
-        print("No Offensive Image Found...\n\nReturning the Response!")
-        return jsonify({1: class_name})
+    if class_name == 'nsfw' or not error:
+        return jsonify({'classification': class_name})
+    else:
+        return jsonify(error), 500
 
 if __name__ == '__main__':
     app.run()
