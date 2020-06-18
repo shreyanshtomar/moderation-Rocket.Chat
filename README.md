@@ -8,7 +8,7 @@ Run the server.py script to start the server which serves as one endpoint.
 
 $ FLASK_ENV=development FLASK_APP=server/server.py flask run
 
-### We can use the requests library in python to send a POST request to our app:(for testing purposes)
+### We can use the requests library in python to send a POST request to our server app:(for testing purposes)
 On another terminal/cmd Do these..
 
 1. Update the urls of image you want to test in Request Script(request.py).
