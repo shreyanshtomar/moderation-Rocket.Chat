@@ -15,7 +15,6 @@ import json
 from pathlib import Path
 import time
 import requests
-import wget
 
 import re
 import base64
@@ -86,7 +85,7 @@ def predict():
             #imgUrl = payload['imageUrls']
             print(f'Retreiving Image...\n {imgUrl}')            
             image_filename = requests.get(imgUrl, stream = True)
-            
+
             if image_filename.status_code == 200:
                 class_name = get_prediction(io.BytesIO(image_filename.content))
                 end_time = time.time()
