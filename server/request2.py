@@ -2,12 +2,12 @@ import requests
 import base64
 
 payload = {
-    "imageUrls" : [
-        "https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/06/06/15/Chris-Pratt.jpg?w968h681",
-        "https://www.curvyerotic.com/wp-content/uploads/2018/09/nora-rose-scarf-nude-muse-1.jpg",
-
-    ]
+      'imageUrls': [
+            "https://unsplash.com/photos/I2fStgjOyAg/download?force=true",
+            "https://www.photo-kako.com/sample/low-image-quality.jpg"
+      ]
 }
-resp = requests.post("http://localhost:5000/predict",data= payload)
+
+resp = requests.post("http://localhost:5000/predict", json = payload)
 
 print(resp.json())

@@ -5,14 +5,13 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from torchvision import datasets, models, transforms
-from service_streamer import ThreadedStreamer
+#from service_streamer import ThreadedStreamer
 
 import copy    
 import glob
 import io
 from io import open
 import json
-import os, os.path, random
 from pathlib import Path
 import time
 import requests
@@ -44,11 +43,12 @@ path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
 
 #Preparing model for evaluation based on device's capability
 if not device_avail:
+    print ('Model loaded & Inferencing on CPU...')
     net.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
-    print ('Model loaded')
 else:
+    print ('Model loaded & Inferencing on GPU...')
     net.load_state_dict(torch.load(path))
-    print ('Model loaded')
+print('-'*80)
 
 #Evaluation mode
 net.eval()
@@ -80,15 +80,24 @@ def predict():
     if request.method == 'POST':
         # we will get the file from the request
         start_time = time.time()
-        payload = request.form.to_dict()
-        for i in payload.values():
-            imgUrl = payload['imageUrls']
-            print("Downloading Image....")
-            image_filename = wget.download(imgUrl)
+        payload = request.get_json()
 
-            class_name = get_prediction(image_filename)
-            end_time = time.time()
-            print(end_time-start_time)
+        for imgUrl in payload['imageUrls']:
+            #imgUrl = payload['imageUrls']
+            print(f'Retreiving Image...\n {imgUrl}')            
+            image_filename = requests.get(imgUrl, stream = True)
+            
+            if image_filename.status_code == 200:
+                class_name = get_prediction(io.BytesIO(image_filename.content))
+                end_time = time.time()
+                totalTime = end_time-start_time
+                print(f'Image downloaded successfully! \n Time - {totalTime: .2f}s')
+            else:
+                end_time = time.time()
+                totalTime = end_time-start_time
+                print(f'Image could not be downloaded! \n Time - {totalTime: .2f}s')
+
+            print('-'*80)
 
             if(class_name == 'nsfw'):
                 print("Prediction returned to the endpoint!")
