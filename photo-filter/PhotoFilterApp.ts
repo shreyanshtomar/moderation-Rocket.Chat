@@ -30,15 +30,20 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
         const json = JSON.stringify({image_url: ['http://localhost:3000' + imageUrl]});
         console.log(json);
 
-        const response = await fetch('http://127.0.0.1:5000/predict', {
-            method: 'POST',
+        fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: json,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'} });
-        if (!response.ok) {
-            console.log('Error!');
-        } else {
-            console.log('++++++++++++++++++++++ ' + response.json() + ' ++++++++++++++++++++++');
-        }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+            console.log('Success:----------------->>>>>>>>', data);
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
 
         read.getNotifier().notifyUser(message.sender, {
             room: message.room,
