@@ -85,7 +85,7 @@ def predict():
     payload = request.get_json()
     error = {}
 
-    for imgUrl in payload['imageUrls']:
+    for imgUrl in payload['image_url']:
         print(f'Retreiving Image...\n {imgUrl}')
         try:
             image_filename = requests.get(imgUrl, stream = True)

@@ -1,22 +1,22 @@
-# moderation
-This repo contains all the files related to Rocket.Chat app development for Content Moderation
+# Photo Filter
+This app filters offensive images in chat
 
-## Running the server and Testing it.
+## Getting Started
+Now that you have generated a blank default Rocket.Chat App, what are you supposed to do next?
+Start developing! Open up your favorite editor, our recommended one is Visual Studio code,
+and start working on your App. Once you have something ready to test, you can either
+package it up and manually deploy it to your test instance or you can use the CLI to do so.
+Here are some commands to get started:
+- `rc-apps package`: this command will generate a packaged app file (zip) which can be installed **if** it compiles with TypeScript
+- `rc-apps deploy`: this will do what `package` does but will then ask you for your server url, username, and password to deploy it for you
 
-### Run the server
-Run the server.py script to start the server which serves as one endpoint.
-
-$ FLASK_ENV=development FLASK_APP=server/server.py flask run
-
-### We can use the requests library in python to send a POST request to our server app:(for testing purposes)
-On another terminal/cmd Do these..
-
-1. Update the urls of image you want to test in Request Script(request.py).
-2. Run the request.py script and check the output for prediction. ("$ python3 server/request.py").
-3. Output(response) -> {'class_name': 'sfw'} (depends of type of image).
-
-### Dependencies
-1. Anaconda ("https://docs.anaconda.com/anaconda/install/")
-2. PyTorch ("https://pytorch.org/")
-3. pip ("https://pip.pypa.io/en/stable/installing/")
-4. pip install -r requirements.txt
+## Documentation
+Here are some links to examples and documentation:
+- [Rocket.Chat Apps TypeScript Definitions Documentation](https://rocketchat.github.io/Rocket.Chat.Apps-engine/)
+- [Rocket.Chat Apps TypeScript Definitions Repository](https://github.com/RocketChat/Rocket.Chat.Apps-engine)
+- [Example Rocket.Chat Apps](https://github.com/graywolf336/RocketChatApps)
+- Community Forums
+  - [App Requests](https://forums.rocket.chat/c/rocket-chat-apps/requests)
+  - [App Guides](https://forums.rocket.chat/c/rocket-chat-apps/guides)
+  - [Top View of Both Categories](https://forums.rocket.chat/c/rocket-chat-apps)
+- [#rocketchat-apps on Open.Rocket.Chat](https://open.rocket.chat/channel/rocketchat-apps)

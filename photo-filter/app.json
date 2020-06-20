@@ -1,0 +1,15 @@
+{
+    "id": "9eebd5d3-b425-4414-b42b-bd5c497f24c6",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.4.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Shreyansh",
+        "homepage": "https://shreyanshtomar.tech",
+        "support": "shreyanshtomar.code@gmail.com"
+    },
+    "name": "Photo Filter",
+    "nameSlug": "photo-filter",
+    "classFile": "PhotoFilterApp.ts",
+    "description": "This app filters offensive images in chat"
+}

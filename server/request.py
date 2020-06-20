@@ -1,7 +1,7 @@
 import requests
 
 payload = {
-      'imageUrls': [
+      'image_url': [
             "https://unsplash.com/photos/I2fStgjOyAg/download?force=true",
             "https://unsplash.com/photos/-Hm_xIcYbUY/download?force=true&w=640"
       ]
