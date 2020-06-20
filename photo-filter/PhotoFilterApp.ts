@@ -25,7 +25,7 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
         const imageUrl = (message.attachments || []).reduce((total, a) => {
                                 return total + (a.imageUrl || '');
                             }, '');
-
+        
         console.log('**************************  ' + imageUrl + '  **************************');
         const json = JSON.stringify({image_url: ['http://localhost:3000' + imageUrl]});
         console.log(json);
@@ -38,15 +38,17 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
         };
         const response = await http.post('http://localhost:5000/predict', options);
         console.log('------------------' + response.content + '---------------------------');
-
-        read.getNotifier().notifyUser(message.sender, {
-            room: message.room,
-            sender: message.sender,
-            text: 'Your message has been blocked by *Photo Filter*',
-            alias: 'Content Filter',
-            emoji: ':no_entry:',
-        });
-
-        return true;
-    }
+        const obj = JSON.parse(response.content || '');
+        if (obj.classification === 'nsfw') {
+            read.getNotifier().notifyUser(message.sender, {
+                room: message.room,
+                sender: message.sender,
+                text: 'Your message has been blocked by *Photo Filter*',
+                alias: 'Content Filter',
+                emoji: ':no_entry:',
+            });
+            return true;
+          }
+        return false;
+      }
 }
