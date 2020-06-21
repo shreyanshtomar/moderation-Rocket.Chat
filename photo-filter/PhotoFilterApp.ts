@@ -21,6 +21,7 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
         const imageUrl = (message.attachments || []).reduce((total, a) => {
                                 return total + (a.imageUrl || '');
                             }, '');
+        // Grabbing image URLs..
 
         if (imageUrl !== '') {
             console.log('**************************  ' + imageUrl + '  **************************');
@@ -40,7 +41,7 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
             read.getNotifier().notifyUser(message.sender, {
                 room: message.room,
                 sender: message.sender,
-                text: 'Your message has been blocked by *Photo Filter*',
+                text: 'Your message has been blocked by *Photo Filter* \nIf you think this is a false positive ask your administrator to turn off the app.',
                 alias: 'Photos & Links Filter',
                 emoji: ':no_entry:',
             });
@@ -48,6 +49,7 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
             }
         }
 
+        // Grabbing links from text messages..
         const text = (message.text || '');
         const matches = text.match(/\bhttps?:\/\/\S+/gi);
 
