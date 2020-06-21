@@ -1,6 +1,4 @@
 import {
-    IConfigurationExtend,
-    IEnvironmentRead,
     IHttp,
     ILogger,
     IPersistence,
@@ -9,8 +7,6 @@ import {
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IMessage, IPreMessageSentPrevent } from '@rocket.chat/apps-engine/definition/messages';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
-import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
     constructor(info: IAppInfo, logger: ILogger) {
@@ -32,10 +28,10 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
             console.log(json);
 
             const options = {
-            headers: {
-                'content-type': 'application/json',
-            },
-            content: json,
+                headers: {
+                    'content-type': 'application/json',
+                },
+                content: json,
             };
             const response = await http.post('http://localhost:5000/predict', options);
             console.log('------------------' + response.content + '---------------------------');
@@ -45,13 +41,39 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
                 room: message.room,
                 sender: message.sender,
                 text: 'Your message has been blocked by *Photo Filter*',
-                alias: 'Content Filter',
+                alias: 'Photos & Links Filter',
                 emoji: ':no_entry:',
             });
             return true;
             }
         }
 
+        const text = (message.text || '');
+        const matches = text.match(/\bhttps?:\/\/\S+/gi);
+
+        if (matches !== null) {
+            const json = JSON.stringify({image_url: matches});
+            console.log('-----------------------' + json + '--------------------');
+            const options = {
+                headers: {
+                    'content-type': 'application/json',
+                },
+                content: json,
+            };
+            const response = await http.post('http://localhost:5000/predict', options);
+            console.log('------------------' + response.content + '---------------------------');
+            const imageObj = JSON.parse(response.content || '');
+            if (imageObj.classification === 'nsfw') {
+            read.getNotifier().notifyUser(message.sender, {
+                room: message.room,
+                sender: message.sender,
+                text: 'Your message has been blocked by *Photo Filter*. \nIf you think this is a false positive ask your administrator to turn off the app.',
+                alias: 'Photos & Links Filter',
+                emoji: ':no_entry:',
+            });
+            return true;
+            }
+        }
 
         return false;
       }
