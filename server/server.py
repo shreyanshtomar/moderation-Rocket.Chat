@@ -89,9 +89,11 @@ def predict():
         print(f'Retreiving Image...\n {imgUrl}')
         try:
             image_filename = requests.get(imgUrl, stream = True)
-            if image_filename.status_code == 200:
+            fileType = image_filename.headers['Content-Type']
+            print(fileType)
+            if image_filename.status_code == 200 and fileType == ('image/jpeg' or 'image/png'):
                 class_name = get_prediction(io.BytesIO(image_filename.content))
-            else:
+            elif(fileType == ('image/jpeg' or 'image/png')):
                 print(f'ERROR: Error while downloading image. Got status code {image_filename.status_code}.')
                 error = {'error':'Unexpected error encountered.'}
                 continue
@@ -105,11 +107,14 @@ def predict():
         print(f'Time - {totalTime: .2f}s')
         print('-'*80)
 
-        if(class_name == 'nsfw'):
+        if(fileType == ('image/jpeg' or 'image/png') and class_name == 'nsfw'):
             break
-
-    if class_name == 'nsfw' or not error:
-        return jsonify({'classification': class_name})
+        
+    if(fileType == ('image/jpeg' or 'image/png')):
+        if class_name == 'nsfw' or not error:
+            return jsonify({'classification': class_name})
+        else:
+            return jsonify(error), 500
     else:
         return jsonify(error), 500
 

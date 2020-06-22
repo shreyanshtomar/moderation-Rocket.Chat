@@ -76,7 +76,6 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
             return true;
             }
         }
-
         return false;
       }
 }
