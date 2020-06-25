@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 from torchvision import datasets, models, transforms
 #from service_streamer import ThreadedStreamer
 
+from tqdm import tqdm
 import copy    
 import glob
 import io
@@ -20,6 +21,7 @@ import re
 import base64
 from PIL import Image
 from flask import Flask, jsonify, request
+import os
 
 app = Flask(__name__)
 
@@ -85,16 +87,20 @@ def predict():
     payload = request.get_json()
     error = {}
 
-    for imgUrl in payload['image_url']:
+    for imgUrl in payload['url']:
         print(f'Retreiving Image...\n {imgUrl}')
         try:
-            image_filename = requests.get(imgUrl, stream = True)
-            fileType = image_filename.headers['Content-Type']
+            response = requests.get(imgUrl, stream = True)
+            
+            fileType = response.headers['Content-Type']
             print(fileType)
-            if image_filename.status_code == 200 and fileType == ('image/jpeg' or 'image/png'):
-                class_name = get_prediction(io.BytesIO(image_filename.content))
+            if response.status_code == 200 and fileType == ('image/jpeg' or 'image/png'):
+                class_name = get_prediction(io.BytesIO(response.content))
             elif(fileType == ('image/jpeg' or 'image/png')):
-                print(f'ERROR: Error while downloading image. Got status code {image_filename.status_code}.')
+                print(f'ERROR: Error while downloading image. Got status code {response.status_code}.')
+                error = {'error':'Unexpected error encountered.'}
+            else:
+                print(f'ERROR: Error while downloading image. Got status code {response.status_code}.')
                 error = {'error':'Unexpected error encountered.'}
                 continue
         except Exception as ex:
@@ -109,9 +115,10 @@ def predict():
 
         if(fileType == ('image/jpeg' or 'image/png') and class_name == 'nsfw'):
             break
-        
+
     if(fileType == ('image/jpeg' or 'image/png')):
         if class_name == 'nsfw' or not error:
+            print({'classification': class_name})
             return jsonify({'classification': class_name})
         else:
             return jsonify(error), 500

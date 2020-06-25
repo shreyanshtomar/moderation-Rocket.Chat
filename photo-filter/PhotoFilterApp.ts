@@ -18,14 +18,14 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
     }
 
     public async executePreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp, persistence: IPersistence): Promise<boolean> {
+        // Grabbing image URLs..
+        const serverUrl: string = 'http://localhost:5000/predict';
         const imageUrl = (message.attachments || []).reduce((total, a) => {
                                 return total + (a.imageUrl || '');
                             }, '');
-        // Grabbing image URLs..
-
         if (imageUrl !== '') {
-            console.log('**************************  ' + imageUrl + '  **************************');
-            const json = JSON.stringify({image_url: ['http://localhost:3000' + imageUrl]});
+            console.log('****** ' + imageUrl + '  ******');
+            const json = JSON.stringify({url: ['http://localhost:3000' + imageUrl]});
             console.log(json);
 
             const options = {
@@ -34,9 +34,12 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
                 },
                 content: json,
             };
-            const response = await http.post('http://localhost:5000/predict', options);
-            console.log('------------------' + response.content + '---------------------------');
+            const response = await http.post(serverUrl, options);
+
+            console.log(response.content);
+
             const imageObj = JSON.parse(response.content || '');
+
             if (imageObj.classification === 'nsfw') {
             read.getNotifier().notifyUser(message.sender, {
                 room: message.room,
@@ -54,16 +57,16 @@ export class PhotoFilterApp extends App implements IPreMessageSentPrevent {
         const matches = text.match(/\bhttps?:\/\/\S+/gi);
 
         if (matches !== null) {
-            const json = JSON.stringify({image_url: matches});
-            console.log('-----------------------' + json + '--------------------');
+            const json = JSON.stringify({url: matches});
+            console.log('****** ' + json + '****** ');
             const options = {
                 headers: {
                     'content-type': 'application/json',
                 },
                 content: json,
             };
-            const response = await http.post('http://localhost:5000/predict', options);
-            console.log('------------------' + response.content + '---------------------------');
+            const response = await http.post(serverUrl, options);
+            console.log(response.content);
             const imageObj = JSON.parse(response.content || '');
             if (imageObj.classification === 'nsfw') {
             read.getNotifier().notifyUser(message.sender, {
