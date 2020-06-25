@@ -3,24 +3,28 @@
 In the command line from the project working folder ```./moderation``` execute the following command:
 
 ```
-python -m unittest discover -s tests -p '*_test.py' -v
+python -m unittest discover -s tests -p 'test_*.py' -v
+or
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 Sample output:
 ```
-test_sfw_image (inference_test.BasicTestCase) ... ok
-test_sfw_image_sent_as_base64 (inference_test.BasicTestCase) ... FAIL
+test_nsfw_images (test_inference.BasicTestCase) ... {'url': ['https://unsplash.com/photos/I2fStgjOyAg/download?force=true', 'https://unsplash.com/photos/-Hm_xIcYbUY/download?force=true&w=640']}
+Retreiving Image...
+ https://unsplash.com/photos/I2fStgjOyAg/download?force=true
+image/jpeg
+Time -  5.09s
+--------------------------------------------------------------------------------
+Retreiving Image...
+ https://unsplash.com/photos/-Hm_xIcYbUY/download?force=true&w=640
+image/jpeg
+Time -  7.27s
+--------------------------------------------------------------------------------
+{'classification': 'nsfw'}
 
-======================================================================
-FAIL: test_sfw_image_sent_as_base64 (inference_test.BasicTestCase)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "D:\DevOps\GSoC\moderation\tests\inference_test.py", line 21, in test_sfw_image_sent_as_base64
-    self.assertEqual(resp.status_code, 200)
-AssertionError: 400 != 200
 
-----------------------------------------------------------------------
-Ran 2 tests in 0.401s
+ok
+Ran 4 tests in 18.636s
 
-FAILED (failures=1)
 ```
