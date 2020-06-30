@@ -1,3 +1,4 @@
+from __future__ import print_function
 import torch
 import torch.functional as F
 import torch.nn as nn
@@ -7,7 +8,6 @@ import torchvision.transforms as transforms
 from torchvision import datasets, models, transforms
 #from service_streamer import ThreadedStreamer
 
-from tqdm import tqdm
 import copy    
 import glob
 import io
@@ -16,6 +16,8 @@ import json
 from pathlib import Path
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 import re
 import base64
@@ -88,29 +90,36 @@ def predict():
     error = {}
 
     for imgUrl in payload['url']:
-        print(f'Retreiving Image...\n {imgUrl}')
+        print('Retreiving Image...\n {}'.format(imgUrl))
         try:
-            response = requests.get(imgUrl, stream = True)
+            session = requests.Session()
+            retry = Retry(connect=3, backoff_factor=0.5)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount('http://', adapter)
+            session.mount('https://', adapter)
+
+            response = session.get(imgUrl)
+            #response = requests.get(imgUrl, stream = True)
             
-            fileType = response.headers['Content-Type']
+            fileType = response.headers['content-type']
             print(fileType)
             if response.status_code == 200 and fileType == ('image/jpeg' or 'image/png'):
                 class_name = get_prediction(io.BytesIO(response.content))
             elif(fileType == ('image/jpeg' or 'image/png')):
-                print(f'ERROR: Error while downloading image. Got status code {response.status_code}.')
+                print('ERROR: Error while downloading image. Got status code {}.'.format(response.status_code))
                 error = {'error':'Unexpected error encountered.'}
             else:
-                print(f'ERROR: Error while downloading image. Got status code {response.status_code}.')
+                print('ERROR: Error while downloading image. Got status code {}.'.format(response.status_code))
                 error = {'error':'Unexpected error encountered.'}
                 continue
         except Exception as ex:
-            print(f'ERROR: {ex}')
+            print('ERROR: {}'.format(ex))
             error = {'error':'Unexpected error encountered.'}
             continue
 
         end_time = time.time()
         totalTime = end_time-start_time
-        print(f'Time - {totalTime: .2f}s')
+        print('Time - {}s'.format(totalTime))
         print('-'*80)
 
         if(fileType == ('image/jpeg' or 'image/png') and class_name == 'nsfw'):
@@ -126,4 +135,4 @@ def predict():
         return jsonify(error), 500
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host = '0.0.0.0', debug = True)
