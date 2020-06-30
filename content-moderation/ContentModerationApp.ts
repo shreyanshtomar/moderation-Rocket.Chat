@@ -13,9 +13,9 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
         super(info, logger);
     }
 
-    public async checkPreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp): Promise<boolean> {
-        return true;
-    }
+    // public async checkPreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp): Promise<boolean> {
+    //     return true;
+    // }
 
     public async executePreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp, persistence: IPersistence): Promise<boolean> {
         // Grabbing image URLs..
