@@ -16,8 +16,6 @@ import json
 from pathlib import Path
 import time
 import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 
 import re
 import base64
