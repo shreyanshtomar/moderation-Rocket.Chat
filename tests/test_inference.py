@@ -4,8 +4,8 @@ from server.server import app
 import requests
 from io import BytesIO
 
+serverUrl = "http://localhost:5000/predict"
 class BasicTestCase(unittest.TestCase):
-
     #The below test, tests if the images that are NSFW doesn't pass..
     def test_nsfw_images(self):
         tester = app.test_client(self)
@@ -15,7 +15,7 @@ class BasicTestCase(unittest.TestCase):
                 "https://unsplash.com/photos/-Hm_xIcYbUY/download?force=true&w=640"
             ]
         }
-        resp = tester.post("http://localhost:5000/predict", json = payload)
+        resp = tester.post(serverUrl, json = payload)
         self.assertEqual(resp.status_code, 200)
         print('\n')
     
@@ -28,7 +28,7 @@ class BasicTestCase(unittest.TestCase):
                 "https://unsplash.com/photos/IMecW34PSu8/download?force=true&w=640"
             ]
         }
-        resp = tester.post("http://localhost:5000/predict", json = payload)
+        resp = tester.post(serverUrl, json = payload)
         self.assertEqual(resp.status_code, 200)
         print('\n')
 
@@ -42,7 +42,7 @@ class BasicTestCase(unittest.TestCase):
                 "https://www.reddit.com/r/datascience/comments/hf5x2i/data_science_for_social_good/"
             ]
         }
-        resp = tester.post("http://localhost:5000/predict", json = payload)
+        resp = tester.post(serverUrl, json = payload)
         self.assertEqual(resp.status_code, 500)
         print('\n')
 
@@ -56,7 +56,7 @@ class BasicTestCase(unittest.TestCase):
                 "https://www.redit.com/r/datasnce/comments/hf5x2i/data_science_for_social_good/"
             ]
         }
-        resp = tester.post("http://localhost:5000/predict", json = payload)
+        resp = tester.post(serverUrl, json = payload)
         self.assertEqual(resp.status_code, 500)
         print('\n')
 

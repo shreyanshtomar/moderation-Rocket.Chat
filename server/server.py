@@ -92,14 +92,14 @@ def predict():
     for imgUrl in payload['url']:
         print('Retreiving Image...\n {}'.format(imgUrl))
         try:
-            session = requests.Session()
-            retry = Retry(connect=3, backoff_factor=0.5)
-            adapter = HTTPAdapter(max_retries=retry)
-            session.mount('http://', adapter)
-            session.mount('https://', adapter)
+            # session = requests.Session()
+            # retry = Retry(connect=3, backoff_factor=0.5)
+            # adapter = HTTPAdapter(max_retries=retry)
+            # session.mount('http://', adapter)
+            # session.mount('https://', adapter)
 
-            response = session.get(imgUrl)
-            #response = requests.get(imgUrl, stream = True)
+            # response = session.get(imgUrl)
+            response = requests.get(imgUrl, stream = True)
             
             fileType = response.headers['content-type']
             print(fileType)
