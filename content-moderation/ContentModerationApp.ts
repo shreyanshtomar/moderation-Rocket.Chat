@@ -9,7 +9,7 @@ import { IMessage, IPreMessageSentPrevent } from '@rocket.chat/apps-engine/defin
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 
 export class ContentModerationApp extends App implements IPreMessageSentPrevent {
-    customLogger: ILogger;
+    public customLogger: ILogger;
     constructor(info: IAppInfo, logger: ILogger) {
         super(info, logger);
         this.customLogger = logger;
@@ -22,13 +22,13 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
     public async executePreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp, persistence: IPersistence): Promise<boolean> {
         // Grabbing image URLs..
         const serverUrl: string = 'http://localhost:5000/predict';
-        const imageUrl = (message.attachments || []).map(a=>'http://host.docker.internal:3000' + a.imageUrl);
+        const imageUrl = (message.attachments || []).map((a) => 'http://127.0.0.1:3000' + a.imageUrl);
 
         if (imageUrl.length > 0) {
             console.log('****** ' + imageUrl + '  ******');
             const json = JSON.stringify({url: imageUrl});
             this.customLogger.log(json);
-            //console.log(json);
+            // console.log(json);
 
             const options = {
                 headers: {

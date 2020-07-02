@@ -97,7 +97,8 @@ def predict():
             # session.mount('https://', adapter)
 
             # response = session.get(imgUrl)
-            response = requests.get(imgUrl, stream = True)
+            headers = {'X-Auth-UserId': 'k2vJme7nTWmPtE7rM','X-Auth-Token':'DWhYYB1cqpBIlW-3QyyVUJiy54XtuJKdF5706QWbVwO'}
+            response = requests.get(imgUrl, stream = True, headers = headers)
             
             fileType = response.headers['content-type']
             print(fileType)

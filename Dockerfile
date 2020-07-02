@@ -1,19 +1,18 @@
-FROM ubuntu:18.04
+FROM python:3
 
 MAINTAINER shreyansh-tomar
-RUN apt-get update && apt-get install -y \
-    python3-pip
-RUN pip3 install --upgrade pip
+
+RUN pip install --upgrade pip
 
 RUN pip install torch torchvision
 
 RUN pip install -U Flask
 RUN pip install requests
 
-WORKDIR /flaskApp
-COPY . /flaskApp
+WORKDIR /app
+COPY . /app
 
 EXPOSE 5000
-ENTRYPOINT ["python3" ]
+ENTRYPOINT ["python" ]
 CMD ["server/server.py"]
 
