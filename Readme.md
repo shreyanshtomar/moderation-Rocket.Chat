@@ -20,7 +20,7 @@ meteor npm start
 Open http://localhost:3000 or http://127.0.0.1:3000 to start the RC and set it up with your username and password!
 
 ## To either simply test the Content-Moderation-App on your local RC instance or contribute to development.
-There are two methods to do it.
+
 ```sh
 cd moderation
 docker build -t serverapp:latest .
