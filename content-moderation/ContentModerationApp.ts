@@ -1,4 +1,6 @@
 import {
+    IConfigurationExtend,
+    IEnvironmentRead,
     IHttp,
     ILogger,
     IPersistence,
@@ -7,6 +9,7 @@ import {
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IMessage, IPreMessageSentPrevent } from '@rocket.chat/apps-engine/definition/messages';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
+import { SettingType } from '@rocket.chat/apps-engine/definition/settings';
 
 export class ContentModerationApp extends App implements IPreMessageSentPrevent {
     public customLogger: ILogger;
@@ -15,14 +18,15 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
         this.customLogger = logger;
     }
 
-    // public async checkPreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp): Promise<boolean> {
-    //     return true;
-    // }
-
     public async executePreMessageSentPrevent(message: IMessage, read: IRead, http: IHttp, persistence: IPersistence): Promise<boolean> {
         // Grabbing image URLs..
-        const serverUrl: string = 'http://localhost:5000/predict';
-        const imageUrl = (message.attachments || []).map((a) => 'http://127.0.0.1:3000' + a.imageUrl);
+        const serverUrl = await read.getEnvironmentReader().getSettings().getById('Content_Moderation_App');
+        const publicUrl = await read.getEnvironmentReader().getSettings().getById('Rocket Chat host URL');
+        const rcHostUrl: string = publicUrl.value;
+        const contentModerationAppUrl: string = serverUrl.value;
+
+
+        const imageUrl = (message.attachments || []).map((a) => rcHostUrl + a.imageUrl);
 
         if (imageUrl.length > 0) {
             console.log('****** ' + imageUrl + '  ******');
@@ -36,7 +40,7 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
                 },
                 content: json,
             };
-            const response = await http.post(serverUrl, options);
+            const response = await http.post(contentModerationAppUrl, options);
 
             console.log(response.content);
 
@@ -67,7 +71,7 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
                 },
                 content: json,
             };
-            const response = await http.post(serverUrl, options);
+            const response = await http.post(contentModerationAppUrl, options);
             console.log(response.content);
             const imageObj = JSON.parse(response.content || '');
             if (imageObj.classification === 'nsfw') {
@@ -83,4 +87,24 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
         }
         return false;
       }
+      protected async extendConfiguration(configuration: IConfigurationExtend, environmentRead: IEnvironmentRead): Promise<void> {
+        await configuration.settings.provideSetting({
+            id: 'Rocket Chat host URL',
+            type: SettingType.STRING,
+            packageValue: '',
+            required: true,
+            public: false,
+            i18nLabel: 'Rocket Chat host URL',
+            i18nDescription: 'Provide the Rocket Chat host URL. For example: "http://127.0.0.1:3000"',
+        });
+        await configuration.settings.provideSetting({
+            id: 'Content_Moderation_App',
+            type: SettingType.STRING,
+            packageValue: '',
+            required: true,
+            public: false,
+            i18nLabel: 'Content_Moderation_App Host URL',
+            i18nDescription: 'Provide Content_Moderation_App host url to get predictions from. For example: "http://127.0.0.1:5000/predict"',
+        });
+    }
 }

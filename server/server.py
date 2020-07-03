@@ -28,7 +28,6 @@ app = Flask(__name__)
 #Automatically detects if the device is CUDA enabled to run GPU inferences.
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device_avail = torch.cuda.is_available()
-
 class_index = {0: 'nsfw', 1: 'sfw'}
 net = models.resnet18(pretrained=True)
 net = net.to(device)
