@@ -8,11 +8,11 @@ RUN pip install torch torchvision
 
 RUN pip install -U Flask
 RUN pip install requests
+RUN pip install gunicorn
 
 WORKDIR /app
 COPY . /app
 
 EXPOSE 5000
-ENTRYPOINT ["python" ]
-CMD ["server/server.py"]
+CMD ["gunicorn", "-w", "3", "-b", ":5000", "-t", "360", "--reload", "wsgi:app"]
 

@@ -39,7 +39,7 @@ num_ftrs = net.fc.in_features
 net.fc = nn.Linear(num_ftrs, 128)
 net.fc = net.fc.to(device)
 
-path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
+path = Path('resnet18_checkpoint.pth') #Path to the checkpoint(weight)
 
 #Preparing model for evaluation based on device's capability
 if not device_avail:
