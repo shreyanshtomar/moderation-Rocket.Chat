@@ -89,14 +89,7 @@ def predict():
     for imgUrl in payload['url']:
         print('Retreiving Image...\n {}'.format(imgUrl))
         try:
-            # session = requests.Session()
-            # retry = Retry(connect=3, backoff_factor=0.5)
-            # adapter = HTTPAdapter(max_retries=retry)
-            # session.mount('http://', adapter)
-            # session.mount('https://', adapter)
-
-            # response = session.get(imgUrl)
-            headers = {'X-Auth-UserId': 'k2vJme7nTWmPtE7rM','X-Auth-Token':'DWhYYB1cqpBIlW-3QyyVUJiy54XtuJKdF5706QWbVwO'}
+            headers = {'x-user-id': 'k2vJme7nTWmPtE7rM','x-auth-token':'CrT8S7XqyoRlMUZzbBjNyi81iZCPnF6DbLAg_uuLkXU'}
             response = requests.get(imgUrl, stream = True, headers = headers)
             
             fileType = response.headers['content-type']
