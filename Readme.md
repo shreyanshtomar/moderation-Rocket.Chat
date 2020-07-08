@@ -1,4 +1,4 @@
-# moderation
+# Content Moderation
 This repo contains all the files related to Rocket.Chat app development for Content Moderation
 
 ## Quick start for code developers
