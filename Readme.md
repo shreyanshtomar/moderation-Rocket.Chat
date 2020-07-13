@@ -22,6 +22,7 @@ Open http://localhost:3000 or http://127.0.0.1:3000 to start the RC and set it u
 ## To either simply test the Content-Moderation-App on your local RC instance or contribute to development.
 
 ```sh
+git clone https://github.com/shreyanshtomar/moderation
 cd moderation
 docker build -t serverapp:latest .
 docker run -t -d -p 5000:5000 --network=host serverapp // The server to which RC sends the images and text for moderation purposes.
