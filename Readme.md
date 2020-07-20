@@ -32,4 +32,7 @@ rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --passwor
 After the first time deployment of app if you change anything in code than add an '--update' flag at the end in the above command.
 ```
 Provide 'Rocket Chat host URL': http://127.0.0.1:3000 &  'Content_Moderation_App Host URL': http://127.0.0.1:5000/predict in 
-Content Moderation App's Setting section in RC instance.
+Content Moderation App's Setting section in RC instance which can be found by following the steps mentioned below:
+1. In options section open administration.
+2. Go to apps.
+3. Look out for Content Moderation App.
