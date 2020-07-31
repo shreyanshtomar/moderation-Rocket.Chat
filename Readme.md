@@ -1,5 +1,7 @@
 # Content Moderation
-This repo contains all the files related to Rocket.Chat app development for Content Moderation
+
+Due to interactions between large communities among different channels in Rocket Chat, there was a need for support of an optional moderation service for offensive content. The service as of now is limited to image moderation which means if someone sends an offensive image to Rocket Chat app and the app along with server is deployed and configured then the image will be blocked but not videos.
+The dockerised moderation service can be deployed to any server easily since all the major Cloud Providers such as AWS, GCP, Azure, IBM Cloud, etc. provides support to Docker.
 
 ## Quick start for code developers
 Prerequisites:
@@ -24,8 +26,8 @@ Open http://localhost:3000 or http://127.0.0.1:3000 to start the RC and set it u
 ```sh
 git clone https://github.com/shreyanshtomar/moderation
 cd moderation
-docker build -t serverapp:latest .
-docker run -t -d -p 5000:5000 --network=host serverapp // The server to which RC sends the images and text for moderation purposes.
+docker-compose build
+docker-compose up // The server to which RC sends the images and text for moderation purposes.
 cd content-moderation
 rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
 
@@ -35,4 +37,4 @@ Provide 'Rocket Chat host URL': http://127.0.0.1:3000 &  'Content_Moderation_App
 Content Moderation App's Setting section in RC instance which can be found by following the steps mentioned below:
 1. In options section open administration.
 2. Go to apps.
-3. Look out for Content Moderation App.
+3. Look out for Content Moderation App & enable it.
