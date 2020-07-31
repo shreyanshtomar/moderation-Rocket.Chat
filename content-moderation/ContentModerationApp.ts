@@ -50,7 +50,7 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
             read.getNotifier().notifyUser(message.sender, {
                 room: message.room,
                 sender: message.sender,
-                text: 'Your message has been blocked by *Photo Filter* \nIf you think this is a false positive ask your administrator to turn off the app.',
+                text: 'Your message has been blocked by *Photos & Links Filter* \nIf you think this is a false positive ask your administrator to turn off the app.',
                 alias: 'Photos & Links Filter',
                 emoji: ':no_entry:',
             });
@@ -78,7 +78,7 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
             read.getNotifier().notifyUser(message.sender, {
                 room: message.room,
                 sender: message.sender,
-                text: 'Your message has been blocked by *Photo Filter*. \nIf you think this is a false positive ask your administrator to turn off the app.',
+                text: 'Your message has been blocked by *Photos & Links Filter*. \nIf you think this is a false positive ask your administrator to turn off the app.',
                 alias: 'Photos & Links Filter',
                 emoji: ':no_entry:',
             });
