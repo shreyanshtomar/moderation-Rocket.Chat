@@ -26,7 +26,9 @@ services:
     ports:
       - 3000:3000
     networks:
-      - rocketchat
+      rocketchat:
+        aliases:
+          - rocket-chat
 
     labels:
       - "traefik.backend=rocketchat"
@@ -74,7 +76,9 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - rocketchat
+      rocketchat:
+        aliases:
+          - moderation-api
 
   nginx:
     container_name: nginx
