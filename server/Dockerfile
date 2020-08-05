@@ -14,5 +14,5 @@ WORKDIR /app
 COPY . /app
 
 EXPOSE 5000
-CMD ["gunicorn", "-w", "3", "-b", ":5000", "-t", "360", "--reload", "wsgi:app"]
+CMD ["gunicorn", "-w", "2", "-b", ":5000", "-t", "360", "--reload", "wsgi:app"]
 
