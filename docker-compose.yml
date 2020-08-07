@@ -64,27 +64,20 @@ services:
       - rocketchat
 
   api:
-    container_name: moderation_api
+    image: shreyanshtomar/moderation_api:1.0
     restart: always
-    build: ./server
     volumes: ['./server:/server']
-    expose:
-      - "5000"
-    ports:
-      - "5000:5000"
     networks:
       rocketchat:
         aliases:
           - moderation-api
+    environment:
+      - RC_UUID=9akF4uih6wpNGdcH2 #Rocket Chat Admin's User-ID
+      - RC_TOKEN=3DtGxcBiWzZeo2UJ5xzFB8ltwFk95q1L1WiJjuRckPY #Rocket Chat Admin's Authentication Token
 
   nginx:
-    container_name: nginx
+    image: shreyanshtomar/moderation_nginx:1.0
     restart: always
-    build: ./nginx
-    expose:
-      - "8080"
-    ports:
-      - "80:8080"
     networks:
       - rocketchat
   

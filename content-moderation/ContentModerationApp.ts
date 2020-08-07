@@ -25,7 +25,6 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
         const rcHostUrl: string = publicUrl.value;
         const contentModerationAppUrl: string = serverUrl.value;
 
-
         const imageUrl = (message.attachments || []).map((a) => rcHostUrl + a.imageUrl);
 
         if (imageUrl.length > 0) {
@@ -41,8 +40,7 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
                 content: json,
             };
             const response = await http.post(contentModerationAppUrl, options);
-
-            console.log(response.content);
+            console.log(response.content );
 
             const imageObj = JSON.parse(response.content || '');
 
@@ -95,7 +93,8 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
             required: true,
             public: false,
             i18nLabel: 'Rocket Chat host URL',
-            i18nDescription: 'Provide the Rocket Chat host URL. For example: "http://127.0.0.1:3000"',
+            i18nDescription: 'Provide the URL where Rocket Chat is hosted',
+            i18nPlaceholder: 'http://rocket-chat:3000',
         });
         await configuration.settings.provideSetting({
             id: 'Content_Moderation_App',
@@ -104,7 +103,8 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
             required: true,
             public: false,
             i18nLabel: 'Content_Moderation_App Host URL',
-            i18nDescription: 'Provide Content_Moderation_App host url to get predictions from. For example: "http://127.0.0.1:5000/predict"',
+            i18nDescription: 'Provide the URL where the Flask Server is hosted',
+            i18nPlaceholder: 'http://moderation-api:5000/predict',
         });
     }
 }
