@@ -147,6 +147,8 @@ __pycache__/
 
 # ignore modules pulled in from npm
 node_modules
+# ignore data folder
+data
 
 # rc-apps package output
 dist/

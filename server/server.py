@@ -25,6 +25,9 @@ import os
 
 app = Flask(__name__)
 
+RC_UUID = os.getenv('RC_UUID')
+RC_TOKEN = os.getenv('RC_TOKEN')
+
 #Automatically detects if the device is CUDA enabled to run GPU inferences.
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device_avail = torch.cuda.is_available()
@@ -89,7 +92,7 @@ def predict():
     for imgUrl in payload['url']:
         print('Retreiving Image...\n {}'.format(imgUrl))
         try:
-            headers = {'x-user-id': 'k2vJme7nTWmPtE7rM','x-auth-token':'CrT8S7XqyoRlMUZzbBjNyi81iZCPnF6DbLAg_uuLkXU'}
+            headers = {'x-user-id': RC_UUID,'x-auth-token': RC_TOKEN}
             response = requests.get(imgUrl, stream = True, headers = headers)
             
             fileType = response.headers['content-type']
@@ -126,4 +129,4 @@ def predict():
         return jsonify(error), 500
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', debug = True)
+    app.run(debug=True)
