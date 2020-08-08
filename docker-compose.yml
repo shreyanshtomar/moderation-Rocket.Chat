@@ -63,24 +63,6 @@ services:
     networks:
       - rocketchat
 
-  api:
-    image: shreyanshtomar/moderation_api:1.0
-    restart: always
-    volumes: ['./server:/server']
-    networks:
-      rocketchat:
-        aliases:
-          - moderation-api
-    environment:
-      - RC_UUID=9akF4uih6wpNGdcH2 #Rocket Chat Admin's User-ID
-      - RC_TOKEN=3DtGxcBiWzZeo2UJ5xzFB8ltwFk95q1L1WiJjuRckPY #Rocket Chat Admin's Authentication Token
-
-  nginx:
-    image: shreyanshtomar/moderation_nginx:1.0
-    restart: always
-    networks:
-      - rocketchat
-  
 networks:
   rocketchat:
     driver: bridge
