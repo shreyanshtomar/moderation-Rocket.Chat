@@ -8,6 +8,7 @@ Prerequisites:
 
 * [RC-Deploy](https://docs.rocket.chat/apps-development/getting-started#installation)
 * [Docker](https://docs.docker.com/get-docker/)
+> Depending on the installation & machine while running docker commands you may want to use 'sudo' if you encounter any errors.
 
 ```sh
 1. git clone https://github.com/shreyanshtomar/moderation
@@ -21,7 +22,7 @@ Copy User-ID & Token for future use.
 Switch to Command Line(terminal).
 ```sh
 7. cd content-moderation
-8. npm install
+8. npm install # You may want to use sudo if you encounter any errors in next step!
 9. rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
 
 After the first time deployment of app if you change anything in App's code than add an '--update' flag at the end in the above command.
