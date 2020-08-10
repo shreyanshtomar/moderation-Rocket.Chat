@@ -6,35 +6,39 @@ The dockerised moderation service can be deployed to any server easily since all
 ## Quick start for code developers
 Prerequisites:
 
-* [Git](http://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-* [Meteor](https://www.meteor.com/install)
-
-> Meteor automatically installs a hidden [NodeJS v12](https://nodejs.org/download/release/v12.16.1/) and [MongoDB v4.2](https://docs.mongodb.com/manual/introduction/) to be used when you run your app in development mode using the `meteor` command.
-
-Now just clone and start the app:
+* [RC-Deploy](https://docs.rocket.chat/apps-development/getting-started#installation)
+* [Docker](https://docs.docker.com/get-docker/)
 
 ```sh
-git clone https://github.com/RocketChat/Rocket.Chat.git
-cd Rocket.Chat
-meteor npm install
-meteor npm start
+1. git clone https://github.com/shreyanshtomar/moderation
+2. cd moderation
+3. docker-compose up -d
 ```
-Open http://localhost:3000 or http://127.0.0.1:3000 to start the RC and set it up with your username and password!
-
-## To either simply test the Content-Moderation-App on your local RC instance or contribute to development.
-
+4. Open RC instance ( http://127.0.0.1:3000 ).
+5. Generate Personal Access Tokens(`My Account -> Personal Access Tokens -> Add `)
+Copy User-ID & Token for future use.
+6. From Rocket Chat open Administration -> General -> Apps -> Enable App development mode & Enable the App Framework.
+Switch to Command Line.
 ```sh
-git clone https://github.com/shreyanshtomar/moderation
-cd moderation
-docker-compose build
-docker-compose up // The server to which RC sends the images and text for moderation purposes.
-cd content-moderation
-rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
+7. cd content-moderation
+8. rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
 
-After the first time deployment of app if you change anything in code than add an '--update' flag at the end in the above command.
+After the first time deployment of app if you change anything in App's code than add an '--update' flag at the end in the above command.
 ```
-Provide 'Rocket Chat host URL': http://127.0.0.1:3000 &  'Content_Moderation_App Host URL': http://127.0.0.1:5000/predict in 
-Content Moderation App's Setting section in RC instance which can be found by following the steps mentioned below:
-1. In options section open administration.
-2. Go to apps.
-3. Look out for Content Moderation App & enable it.
+After deployment let's configure Content Moderation App so that app can help in posting images to the hosted moderation-service to make predictions and
+block offensive images/links.
+In our case:
+9. Administration -> Apps -> Content Moderation.
+'Rocket Chat host URL': http://rocket-chat:3000 &  'Content Moderation App Host URL': http://moderation-api:5000/predict in
+Content Moderation App's Setting.
+Now, Let's deploy our service!!
+10. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) & change the following
+parameters:
+  a. [RC_UUID](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L13)
+  b. [RC_TOKEN](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L14)
+  We copied them in 5th Step.
+```sh
+ 11. docker-compose -f docker-compose-server.yml up -d
+ ```
+ Everything is configured. Now we can use the service.
+
