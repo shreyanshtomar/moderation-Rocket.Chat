@@ -1,3 +1,4 @@
+from __future__ import print_function
 import torch
 import torch.functional as F
 import torch.nn as nn
@@ -20,13 +21,16 @@ import re
 import base64
 from PIL import Image
 from flask import Flask, jsonify, request
+import os
 
 app = Flask(__name__)
+
+RC_UUID = os.getenv('RC_UUID')
+RC_TOKEN = os.getenv('RC_TOKEN')
 
 #Automatically detects if the device is CUDA enabled to run GPU inferences.
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device_avail = torch.cuda.is_available()
-
 class_index = {0: 'nsfw', 1: 'sfw'}
 net = models.resnet18(pretrained=True)
 net = net.to(device)
@@ -38,7 +42,7 @@ num_ftrs = net.fc.in_features
 net.fc = nn.Linear(num_ftrs, 128)
 net.fc = net.fc.to(device)
 
-path = Path('server/resnet18_checkpoint.pth') #Path to the checkpoint(weight)
+path = Path('resnet18_checkpoint.pth') #Path to the checkpoint(weight)
 
 #Preparing model for evaluation based on device's capability
 if not device_avail:
@@ -85,33 +89,44 @@ def predict():
     payload = request.get_json()
     error = {}
 
-    for imgUrl in payload['imageUrls']:
-        print(f'Retreiving Image...\n {imgUrl}')
+    for imgUrl in payload['url']:
+        print('Retreiving Image...\n {}'.format(imgUrl))
         try:
-            image_filename = requests.get(imgUrl, stream = True)
-            if image_filename.status_code == 200:
-                class_name = get_prediction(io.BytesIO(image_filename.content))
+            headers = {'x-user-id': RC_UUID,'x-auth-token': RC_TOKEN}
+            response = requests.get(imgUrl, stream = True, headers = headers)
+            
+            fileType = response.headers['content-type']
+            print(fileType)
+            if response.status_code == 200 and fileType == ('image/jpeg' or 'image/png'):
+                class_name = get_prediction(io.BytesIO(response.content))
+            elif(fileType == ('image/jpeg' or 'image/png')):
+                print('ERROR: Error while downloading image. Got status code {}.'.format(response.status_code))
+                error = {'error':'Unexpected error encountered.'}
             else:
-                print(f'ERROR: Error while downloading image. Got status code {image_filename.status_code}.')
+                print('ERROR: Error while downloading image. Got status code {}.'.format(response.status_code))
                 error = {'error':'Unexpected error encountered.'}
                 continue
         except Exception as ex:
-            print(f'ERROR: {ex}')
+            print('ERROR: {}'.format(ex))
             error = {'error':'Unexpected error encountered.'}
             continue
 
         end_time = time.time()
         totalTime = end_time-start_time
-        print(f'Time - {totalTime: .2f}s')
+        print('Time - {}s'.format(totalTime))
         print('-'*80)
 
-        if(class_name == 'nsfw'):
+        if(fileType == ('image/jpeg' or 'image/png') and class_name == 'nsfw'):
             break
 
-    if class_name == 'nsfw' or not error:
-        return jsonify({'classification': class_name})
+    if(fileType == ('image/jpeg' or 'image/png')):
+        if class_name == 'nsfw' or not error:
+            print({'classification': class_name})
+            return jsonify({'classification': class_name})
+        else:
+            return jsonify(error), 500
     else:
         return jsonify(error), 500
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
