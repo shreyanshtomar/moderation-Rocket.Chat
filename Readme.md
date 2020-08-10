@@ -25,20 +25,22 @@ Switch to Command Line.
 
 After the first time deployment of app if you change anything in App's code than add an '--update' flag at the end in the above command.
 ```
-After deployment let's configure Content Moderation App so that app can help in posting images to the hosted moderation-service to make predictions and
-block offensive images/links.
-In our case:
-9. Administration -> Apps -> Content Moderation.
+> After deployment let's configure Content Moderation App so that app can help in posting images to the hosted moderation-service to make predictions and
+block offensive images/links.<br>
+In our case:<br>
+9. Administration -> Apps -> Content Moderation.<br>
 'Rocket Chat host URL': http://rocket-chat:3000 &  'Content Moderation App Host URL': http://moderation-api:5000/predict in
-Content Moderation App's Setting.
-Now, Let's deploy our service!!
+Content Moderation App's Setting.<br>
+Now, Let's deploy our service!!<br>
 10. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) & change the following
-parameters:
-  a. [RC_UUID](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L13)
-  b. [RC_TOKEN](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L14)
+parameters:<br>
+  a. [RC_UUID](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L13) <br>
+  b. [RC_TOKEN](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L14)<br>
   We copied them in 5th Step.
 ```sh
  11. docker-compose -f docker-compose-server.yml up -d
  ```
- Everything is configured. Now we can use the service.
+ ## Everything is configured now. We can now test the app!!.
+ Try posting an offensive image in one of the channels & it should get blocked!
+ 
 
