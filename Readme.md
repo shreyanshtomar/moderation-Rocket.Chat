@@ -21,26 +21,27 @@ Copy User-ID & Token for future use.
 Switch to Command Line(terminal).
 ```sh
 7. cd content-moderation
-8. rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
+8. npm install
+9. rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
 
 After the first time deployment of app if you change anything in App's code than add an '--update' flag at the end in the above command.
 ```
 > After deployment let's configure Content Moderation App so that app can help in posting images to the hosted moderation-service to make predictions and
 block offensive images/links.<br>
 In our case:<br>
-9. Administration -> Apps -> Content Moderation.<br>
+10. Administration -> Apps -> Content Moderation.<br>
 'Rocket Chat host URL': http://rocket-chat:3000 &  'Content Moderation App Host URL': http://moderation-api:5000/predict in
 Content Moderation App's Setting.<br>
 Now, Let's deploy our service!!<br>
-10. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) in your local moderation folder
+11. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) in your local moderation folder
 (directory) & change the following
 parameters:<br>
   a. [RC_UUID](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L13) <br>
   b. [RC_TOKEN](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L14)<br>
   We copied them in 5th Step.
 ```sh
- 11. cd .. # Make sure you're in moderation directory
- 12. docker-compose -f docker-compose-server.yml up -d
+ 12. cd .. # Make sure you're in moderation directory
+ 13. docker-compose -f docker-compose-server.yml up -d
  ```
  ## Everything is configured now. We can now test the app!!.
  Try posting an offensive image in one of the channels & it should get blocked!
