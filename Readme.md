@@ -32,15 +32,23 @@ In our case:<br>
 'Rocket Chat host URL': http://rocket-chat:3000 &  'Content Moderation App Host URL': http://moderation-api:5000/predict in
 Content Moderation App's Setting.<br>
 Now, Let's deploy our service!!<br>
-10. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) & change the following
+10. Edit [docker-compose-server.yml](https://github.com/shreyanshtomar/moderation/blob/shreyansh_dev/docker-compose-server.yml) in your local moderation folder
+(directory) & change the following
 parameters:<br>
   a. [RC_UUID](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L13) <br>
   b. [RC_TOKEN](https://github.com/shreyanshtomar/moderation/blob/38da4fc779bbaa74e54153aaa0ba0f537e55f563/docker-compose-server.yml#L14)<br>
   We copied them in 5th Step.
 ```sh
- 11. docker-compose -f docker-compose-server.yml up -d
+ 11. cd .. # Make sure you're in moderation directory
+ 12. docker-compose -f docker-compose-server.yml up -d
  ```
  ## Everything is configured now. We can now test the app!!.
  Try posting an offensive image in one of the channels & it should get blocked!
+ 
+ To see the **logs** generated:
+ ```sh
+ docker logs moderation_rocketchat_1
+ docker logs moderation_api_1
+ ```
  
 
