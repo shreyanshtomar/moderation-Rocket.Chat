@@ -17,8 +17,8 @@ Prerequisites:
 4. Open RC instance ( http://127.0.0.1:3000 ).
 5. Generate Personal Access Tokens(`My Account -> Personal Access Tokens -> Add `)
 Copy User-ID & Token for future use.
-6. From Rocket Chat open Administration -> General -> Apps -> Enable App development mode & Enable the App Framework.
-Switch to Command Line.
+6. From Rocket Chat open Administration -> General -> Apps -> Enable App development mode & Enable the App Framework.<br>
+Switch to Command Line(terminal).
 ```sh
 7. cd content-moderation
 8. rc-apps deploy --url http://127.0.0.1:3000 --username <your-user-name> --password <your-password>
