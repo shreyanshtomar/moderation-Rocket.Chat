@@ -19,7 +19,7 @@ Prerequisites:
 3. docker-compose up -d
 ```
 4. Open RC instance ( http://127.0.0.1:3000 ).
-5. Generate Personal Access Tokens(`My Account -> Personal Access Tokens -> Add `)
+5. Generate Personal Access Tokens `My Account -> Personal Access Tokens -> Add `(You can either ignore or not ignore 2 Factor Authentication)
 Copy User-ID & Token for future use.
 6. From Rocket Chat open Administration -> General -> Apps -> Enable App development mode & Enable the App Framework.<br>
 Switch to Command Line(terminal).
