@@ -10,8 +10,8 @@ services:
         aliases:
           - moderation-api
     environment:
-      - RC_UUID=8BvRqoZqbw7BGEW3p #Rocket Chat Admin's User-ID
-      - RC_TOKEN=0JoMTmwykFBkiTeKtjphATkUwOGC3OSiuyn0iDRSy4T #Rocket Chat Admin's Authentication Token
+      - RC_UUID=J5Dy6fAfqbpzDene3 #Rocket Chat Admin's User-ID
+      - RC_TOKEN=3LuP6nfqAuptUSsQaePoFC51EGV9QISEJjXZLswVpA_ #Rocket Chat Admin's Authentication Token
   
 networks:
   rocketchat:

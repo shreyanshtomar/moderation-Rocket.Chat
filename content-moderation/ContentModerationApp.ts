@@ -102,8 +102,8 @@ export class ContentModerationApp extends App implements IPreMessageSentPrevent 
             packageValue: '',
             required: true,
             public: false,
-            i18nLabel: 'Content_Moderation_App Host URL',
-            i18nDescription: 'Provide the URL where the Flask Server is hosted',
+            i18nLabel: 'Content Moderation App Host URL',
+            i18nDescription: 'Provide the URL where the Flask is hosted',
             i18nPlaceholder: 'http://moderation-api:5000/predict',
         });
     }
